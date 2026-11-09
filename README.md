@@ -10,19 +10,17 @@ This repository holds skills for AI coding agents that work with [PR-Agent](http
 
 ## Install a skill
 
-Copy the skill folder into the skills folder of your agent. For Claude Code, use `~/.claude/skills/` for all your projects, or `.claude/skills/` in one repository.
+Skills here follow the open [Agent Skills](https://agentskills.io) format, so any agent that supports it can use them. Clone the repository and copy the skill folder into the folder your agent loads skills from; its documentation names that folder.
 
 ```sh
 git clone https://github.com/The-PR-Agent/skills.git pr-agent-skills
-mkdir -p ~/.claude/skills
-cp -r pr-agent-skills/pr-agent-maintainer ~/.claude/skills/
+cp -r pr-agent-skills/pr-agent-maintainer <your agent's skills folder>/
 ```
-
-Other agents that read `SKILL.md` files can use the same folder. Their documentation gives the folder to copy it into.
 
 ## Add a skill
 
 1. Create a folder named after the skill, in lowercase words joined by hyphens.
 2. Add a `SKILL.md` file to the folder. Start the file with YAML front matter that sets `name` to the folder name and `description` to the situations where an agent should use the skill.
-3. Add a row for the skill to the table in this README.
-4. Open a pull request.
+3. Keep the skill agent-neutral, and cover every git provider PR-Agent supports or say which ones it covers. Link to PR-Agent's documentation instead of copying from it, so the skill does not drift when the docs change.
+4. Add a row for the skill to the table in this README.
+5. Open a pull request.
