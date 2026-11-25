@@ -11,6 +11,7 @@ Exit status is non-zero whenever the requested phase did not complete.
 """
 import asyncio
 import hashlib
+import inspect
 import json
 import re
 import sys
@@ -144,7 +145,10 @@ async def main(mode: str, pr_url: str, work: Path, signature: str = "") -> int:
     s.set("CONFIG.FALLBACK_MODELS", [])
     s.set("CONFIG.CUSTOM_MODEL_MAX_TOKENS", 200000)
     s.set("CONFIG.PUBLISH_OUTPUT", mode == "publish")
-    from pr_agent.tools import pr_reviewer
+    try:
+        from pr_agent.commands import pr_reviewer
+    except ImportError:  # before #4838 renamed tools to commands
+        from pr_agent.tools import pr_reviewer
 
     state = {"head": None, "sent": [], "error": None}
     expected = strip_hidden(preview.read_text()) if mode == "publish" else None
@@ -250,7 +254,9 @@ async def main(mode: str, pr_url: str, work: Path, signature: str = "") -> int:
 
     agent = PRAgent(ai_handler=make_handler(mode, work))
     try:
-        ok = await agent.handle_request(pr_url, ["review"], propagate_tool_errors=True)
+        params = inspect.signature(agent.handle_request).parameters
+        flag = "propagate_command_errors" if "propagate_command_errors" in params else "propagate_tool_errors"
+        ok = await agent.handle_request(pr_url, ["review"], **{flag: True})
     except StopAfterCapture:
         ok = False
     except Exception as e:
