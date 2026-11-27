@@ -22,7 +22,7 @@ A security finding of your own never goes into a public issue or pull request. I
 
 ## Presenting drafts
 
-Unless the maintainer prefers another shape, after a batch show one table first (item, action, confidence, security verdict), then the drafts two at a time, easiest first: clean approve-and-merge items before anything that carries an ask. Keep a count of how many are left.
+Unless the maintainer prefers another shape, after a batch show one table first (item, action, confidence, security verdict, architecture grade), then the drafts two at a time, easiest first: clean approve-and-merge items before anything that carries an ask. Keep a count of how many are left.
 
 Head each draft with the action as something the maintainer can say yes to (approve and merge, COMMENT with two inline suggestions, close as duplicate, carry and merge, no reply owed), whether the contributor has to do anything, and a confidence from 0 to 10. Then one or two plain sentences of reasoning, then the exact text between clear delimiters, each inline comment shown against its `path:line`. The action line answers "do they need to change something or not?" before anyone has to ask.
 
@@ -37,6 +37,8 @@ If the host can show the item beside live provider state (a side panel or simila
 Never work from memory or an earlier survey. Re-fetch the item before forming a view, because reviews land, authors force-push and other maintainers act between sessions.
 
 Skip draft pull requests unless the maintainer names one, and skip anything assigned to or parked with another maintainer. An unassigned item that falls in another maintainer's usual area, such as a request to list a vendor in the docs, is routed to them by assignment rather than answered. Never write anything in a public draft that reads as blaming another maintainer for a delay.
+
+Every review of a pull request or issue also grades its architectural impact as low, medium or high, separately from the security verdict. Low is contained to one module or provider, follows existing patterns and adds no new abstraction or cross-cutting behaviour. Medium is a new abstraction, shared helper or setting that other code will build on, a change to a cross-provider or cross-command contract, or a large single-module addition (roughly 500 lines or more) that maintainers will have to own. High changes how requests flow (dispatch, the publish path, the settings or security model, the prompt pipeline), adds a new subsystem or dependency, or is a design the project cannot easily reverse. Low is reviewed and answered as usual. Medium and high get no design asks from you: assign the item to the maintainer who owns architecture and draft one short comment giving the grade, the reason and, when there is a clear one, "My recommendation: ...". That comment goes through the usual draft and approval. A 2,000-line markdown sanitiser on the publish path that needs rounds of review, each finding new rendering corners, is high. Grade on the first review, so such an item is routed before rounds of asks build up. The table of a batch carries the grade as a column.
 
 Pass `--repo The-PR-Agent/pr-agent` on every `gh pr` and `gh issue` call (`gh api` takes the full path instead). If you work from a fork or a worktree of one, `gh` resolves the repository from the current directory, and pull request numbers collide silently between the fork and upstream. In zsh, quote any `gh api` path containing `?`, or `pulls?state=all` is read as a glob.
 
